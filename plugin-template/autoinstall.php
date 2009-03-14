@@ -86,26 +86,6 @@ function plugin_autoinstall_foo($pi_name)
 }
 
 /**
-* Load plugin configuration from database
-*
-* @param    string  $pi_name    Plugin name
-* @return   boolean             true on success, otherwise false
-* @see      plugin_initconfig_foo
-*
-*/
-function plugin_load_configuration_foo($pi_name)
-{
-    global $_CONF;
-
-    $base_path = $_CONF['path'] . 'plugins/' . $pi_name . '/';
-
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-    require_once $base_path . 'install_defaults.php';
-
-    return plugin_initconfig_foo();
-}
-
-/**
 * Check if the plugin is compatible with this Geeklog version
 *
 * @param    string  $pi_name    Plugin name
@@ -114,7 +94,7 @@ function plugin_load_configuration_foo($pi_name)
 */
 function plugin_compatible_with_this_version_foo($pi_name)
 {
-    // add checks here
+    // add any checks here
 
     return true;
 }
