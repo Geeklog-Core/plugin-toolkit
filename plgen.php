@@ -85,8 +85,9 @@ function patch($content, $plgdata)
     }
 
     $content = str_replace(
-        array('foo', 'Foo'),
-        array($plgdata['pi_name'], $plgdata['pi_display_name']),
+        array('foo', 'Foo', 'FOO'),
+        array($plgdata['pi_name'], $plgdata['pi_display_name'],
+              strtoupper($plgdata['pi_name'])),
         $content
     );
 
@@ -145,7 +146,7 @@ function obfuscateEmail($email)
 /**
 * Read a line from a file handle (usually stdin)
 *
-* NOTE: aborts entire script on error!
+* NOTE: aborts entire script on error
 *
 * @param    filehandle  $fp     file handle, e.g. of 'php://stdin'
 * @return   string              string read, possibly empty
@@ -165,6 +166,68 @@ function readln($fp)
     return $value;
 }
 
+/**
+* Create plugin directory
+*
+* NOTE: aborts entire script on error
+*
+* @param    string  $dirname    subdirectory or empty for main directory
+* @param    array   $plgdata    plugin data
+* @return   void
+*
+*/
+function createPluginDirectory($dirname, $plgdata)
+{
+    if (empty ($dirname)) {
+        $path = $plgdata['pi_name'];
+    } else {
+        $path = $plgdata['pi_name'] . '/' . $dirname;
+    }
+
+    if (mkdir($path) === false) {
+        die("\nFailed to create directory '$path' - aborting\n");
+    }
+}
+
+/**
+* Read content from one of the plugin-template files
+*
+* NOTE: aborts entire script on error
+*
+* @param    string  $filename   file name (relative path)
+* @return   string              file content
+*
+*/
+function readTemplate($filename)
+{
+    $content = file_get_contents('plugin-template/' . $filename);
+    if (($content === false) || empty($content)) {
+        die("\nFailed to read template '$filename' - aborting\n");
+    }
+
+    return $content;
+}
+
+/**
+* Write patched plugin file
+*
+* NOTE: aborts entire script on error
+*
+* @param    string  $filename   file name (relative path)
+* @param    string  $content    contents of the file
+* @param    array   $plgdata    plugin data
+* @return   void
+*
+*/
+function writePluginFile($filename, $content, $plgdata)
+{
+    $outfileName = $plgdata['pi_name'] . '/' . $filename;
+    $written = file_put_contents($outfileName, $content);
+    if (($written === false) || ($written < strlen($content))) {
+        die("\nError writing '$filename' - aborting\n");
+    }
+}
+
 
 // MAIN
 
@@ -178,28 +241,37 @@ if (! empty($name)) {
     $pluginData['pi_name'] = $name;
 }
 
+$pluginData['pi_display_name'] = ucfirst($pluginData['pi_name']); // for now
 echo "\nNext question goes here ...\n";
 
 fclose($stdin);
 
-// create plugin directory
-if (mkdir($pluginData['pi_name']) === false) {
-    die("\nFailed to create directory '{$pluginData['pi_name']}' - aborting\n");
-}
+/**
+* create plugin directories
+*/
+createPluginDirectory('', $pluginData);
+createPluginDirectory('language', $pluginData);
+createPluginDirectory('public_html', $pluginData);
+createPluginDirectory('admin', $pluginData);
+createPluginDirectory('admin/images', $pluginData);
 
-$content = file_get_contents('plugin-template/autoinstall.php');
-if (($content === false) || empty($content)) {
-    die("\nFailed to read template autoinstall.php - aborting\n");
-}
-
+$content = readTemplate('autoinstall.php');
 $content = patch($content, $pluginData);
+writePluginFile('autoinstall.php', $content, $pluginData);
 
-$outfileName = $pluginData['pi_name'] . '/' . 'autoinstall.php';
-$written = file_put_contents($outfileName, $content);
-if (($written === false) || ($written < strlen($content))) {
-    die("\nError writing autoinstall.php - aborting\n");
+$content = readTemplate('functions.inc');
+$content = patch($content, $pluginData);
+writePluginFile('functions.inc', $content, $pluginData);
+
+$content = readTemplate('language/english.php');
+$content = patch($content, $pluginData);
+writePluginFile('language/english.php', $content, $pluginData);
+
+$success = copy('plugin-template/admin/images/foo.png', $pluginData['pi_name']
+                . '/admin/images/' . $pluginData['pi_name'] . '.png');
+if ($success === false) {
+    die("\nFailed to copy plugin icon - aborting\n");
 }
-
 
 echo "\nAll done! You'll find your plugin in the '{$pluginData['pi_name']}' subdirectory.\n\n";
 
