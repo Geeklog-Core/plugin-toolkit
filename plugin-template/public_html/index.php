@@ -4,9 +4,9 @@
 // +---------------------------------------------------------------------------+
 // | Foo Bar Plugin 0.0                                                        |
 // +---------------------------------------------------------------------------+
-// | english.php                                                               |
+// | index.php                                                                 |
 // |                                                                           |
-// | English language file                                                     |
+// | Public plugin page                                                        |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) yyyy by the following authors:                              |
 // |                                                                           |
@@ -35,27 +35,25 @@
 * @package FooBar
 */
 
-/**
-* Import Geeklog plugin messages for reuse
-*
-* @global array $LANG32
-*/
-global $LANG32;
+require_once 'lib-common.php';
 
-// +---------------------------------------------------------------------------+
-// | Array Format:                                                             |
-// | $LANGXX[YY]:  $LANG - variable name                                       |
-// |               XX    - specific array name                                 |
-// |               YY    - phrase id or number                                 |
-// +---------------------------------------------------------------------------+
+// take user back to the homepage if the plugin is not active
+if (! in_array('foobar', $_PLUGINS)) {
+    echo COM_refresh($_CONF['site_url'] . '/index.php');
+    exit;
+}
 
-$LANG_FOOBAR_1 = array(
-    'plugin_name' => 'Foo Bar',
-    'hello' => 'Hello, world!' // this is an example only - feel free to remove
-);
+$display = '';
 
-// Messages for the plugin upgrade
-$PLG_foobar_MESSAGE3001 = 'Plugin upgrade not yet supported.';
-$PLG_foobar_MESSAGE3002 = $LANG32[9];
+
+// MAIN
+$display .= COM_siteHeader('menu', $LANG_FOOBAR_1['plugin_name']);
+$display .= COM_startBlock($LANG_FOOBAR_1['plugin_name']);
+$display .= '<p>Welcome to the ' . $LANG_FOOBAR_1['plugin_name'] . ' plugin, '
+         . $_USER['username'] . '!</p>';
+$display .= COM_endBlock();
+$display .= COM_siteFooter();
+
+echo $display;
 
 ?>

@@ -2,7 +2,7 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Foo Plugin 0.0                                                            |
+// | Foo Bar Plugin 0.0                                                        |
 // +---------------------------------------------------------------------------+
 // | autoinstall.php                                                           |
 // |                                                                           |
@@ -32,7 +32,7 @@
 // +---------------------------------------------------------------------------+
 
 /**
-* @package Foo
+* @package FooBar
 */
 
 /**
@@ -42,11 +42,11 @@
 * @return   array               Plugin information
 *
 */
-function plugin_autoinstall_foo($pi_name)
+function plugin_autoinstall_foobar($pi_name)
 {
-    $pi_name         = 'foo';
-    $pi_display_name = 'Foo';
-    $pi_admin        = $pi_name . ' Admin';
+    $pi_name         = 'foobar';
+    $pi_display_name = 'Foo Bar';
+    $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
         'pi_name'         => $pi_name,
@@ -71,7 +71,7 @@ function plugin_autoinstall_foo($pi_name)
     );
 
     $tables = array(
-        'foo'
+        'foobar'
     );
 
     $inst_parms = array(
@@ -92,7 +92,7 @@ function plugin_autoinstall_foo($pi_name)
 * @return   boolean             true: plugin compatible; false: not compatible
 *
 */
-function plugin_compatible_with_this_version_foo($pi_name)
+function plugin_compatible_with_this_version_foobar($pi_name)
 {
     // add any checks here
 

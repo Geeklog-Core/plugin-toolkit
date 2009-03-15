@@ -2,7 +2,7 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Foo Plugin 0.0                                                            |
+// | Foo Bar Plugin 0.0                                                        |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
 // |                                                                           |
@@ -33,7 +33,7 @@
 // +---------------------------------------------------------------------------+
 
 /**
-* @package Foo
+* @package FooBar
 */
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.inc') !== false) {
@@ -43,7 +43,7 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.inc') !== false) {
 /**
  * Language file include
  */
-$plugin_path = $_CONF['path'] . 'plugins/foo/';
+$plugin_path = $_CONF['path'] . 'plugins/foobar/';
 $langfile = $plugin_path . 'language/' . $_CONF['language'] . '.php';
 
 if (file_exists($langfile)) {
@@ -58,15 +58,15 @@ if (file_exists($langfile)) {
 * @return  array  Array containing (plugin name, admin url, url of plugin icon)
 *
 */
-function plugin_cclabel_foo()
+function plugin_cclabel_foobar()
 {
-    global $_CONF, $LANG_FOO_1;
+    global $_CONF, $LANG_FOOBAR_1;
 
     $retval = array();
-    if (SEC_hasRights('foo.admin')) {
-        $retval = array($LANG_FOO_1['plugin_name'],
-            $_CONF['site_admin_url'] . '/plugins/foo/index.php',
-            plugin_geticon_foo());
+    if (SEC_hasRights('foobar.admin')) {
+        $retval = array($LANG_FOOBAR_1['plugin_name'],
+            $_CONF['site_admin_url'] . '/plugins/foobar/index.php',
+            plugin_geticon_foobar());
     }
 
     return $retval;
@@ -77,13 +77,13 @@ function plugin_cclabel_foo()
 *
 * @return array Array containing (plugin name, plugin admin url, # of plugin items or '')
 */
-function plugin_getadminoption_spamx()
+function plugin_getadminoption_foobar()
 {
-    global $_CONF, $LANG_FOO_1;
+    global $_CONF, $LANG_FOOBAR_1;
 
-    if (SEC_hasRights('foo.admin')) {
-        return array($LANG_FOO_1['plugin_name'],
-            $_CONF['site_admin_url'] . '/plugins/foo/index.php', 0);
+    if (SEC_hasRights('foobar.admin')) {
+        return array($LANG_FOOBAR_1['plugin_name'],
+            $_CONF['site_admin_url'] . '/plugins/foobar/index.php', 0);
     }
 }
 
@@ -93,14 +93,14 @@ function plugin_getadminoption_spamx()
 * @return   string      URL of the icon
 *
 */
-function plugin_geticon_foo()
+function plugin_geticon_foobar()
 {
     global $_CONF;
 
     // popular alternative location:
-    // return $_CONF['site_url'] . '/foo/images/foo.png';
+    // return $_CONF['site_url'] . '/foobar/images/foobar.png';
 
-    return $_CONF['site_admin_url'] . '/plugins/foo/images/foo.png';
+    return $_CONF['site_admin_url'] . '/plugins/foobar/images/foobar.png';
 }
 
 /**
@@ -108,13 +108,13 @@ function plugin_geticon_foo()
  *
  * @return string    plugin version
  */
-function plugin_chkVersion_foo()
+function plugin_chkVersion_foobar()
 {
     global $_CONF;
 
-    require_once $_CONF['path'] . 'plugins/foo/autoinstall.php';
+    require_once $_CONF['path'] . 'plugins/foobar/autoinstall.php';
 
-    $inst_parms = plugin_autoinstall_foo('foo');
+    $inst_parms = plugin_autoinstall_foobar('foobar');
 
     return $inst_parms['info']['pi_version'];
 }
@@ -125,31 +125,31 @@ function plugin_chkVersion_foo()
 * @return   int     Number of message to display or true for success
 *
 */
-function plugin_upgrade_foo()
+function plugin_upgrade_foobar()
 {
     global $_CONF, $_TABLES;
 
     $installed_version = DB_getItem($_TABLES['plugins'], 'pi_version',
-                                    "pi_name = 'foo'");
-    $code_version = plugin_chkVersion_foo();
+                                    "pi_name = 'foobar'");
+    $code_version = plugin_chkVersion_foobar();
     if ($installed_version == $code_version) {
         // nothing to do
         return true;
     }
 
-    require_once $_CONF['path'] . 'plugins/foo/autoinstall.php';
+    require_once $_CONF['path'] . 'plugins/foobar/autoinstall.php';
 
-    if (! plugin_compatible_with_this_version_foo('foo')) {
+    if (! plugin_compatible_with_this_version_foobar('foobar')) {
         return 3002;
     }
 
     // other update code goes here
 
     // update plugin version number
-    $inst_parms = plugin_autoinstall_spamx('foo');
+    $inst_parms = plugin_autoinstall_foobar('foobar');
     $pi_gl_version = $inst_parms['info']['pi_gl_version'];
 
-    DB_query("UPDATE {$_TABLES['plugins']} SET pi_version = '$code_version', pi_gl_version = '$pi_gl_version' WHERE pi_name = 'foo'");
+    DB_query("UPDATE {$_TABLES['plugins']} SET pi_version = '$code_version', pi_gl_version = '$pi_gl_version' WHERE pi_name = 'foobar'");
 
     return true;
 }
@@ -166,15 +166,15 @@ function plugin_upgrade_foo()
 * @return   array   Plugin information
 *
 */
-function plugin_autouninstall_foo()
+function plugin_autouninstall_foobar()
 {
     $out = array (
         /* give the name of the tables, without $_TABLES[] */
-        'tables' => array(/* e.g. 'foo' */),
+        'tables' => array(/* e.g. 'foobar' */),
         /* give the full name of the group, as in the db */
-        'groups' => array('Foo Admin'),
+        'groups' => array('Foo Bar Admin'),
         /* give the full name of the feature, as in the db */
-        'features' => array('foo.admin'),
+        'features' => array('foobar.admin'),
         /* give the full name of the block, including 'phpblock_', etc */
         'php_blocks' => array(),
         /* give all vars with their name */

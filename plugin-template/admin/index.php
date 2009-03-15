@@ -4,9 +4,9 @@
 // +---------------------------------------------------------------------------+
 // | Foo Bar Plugin 0.0                                                        |
 // +---------------------------------------------------------------------------+
-// | english.php                                                               |
+// | index.php                                                                 |
 // |                                                                           |
-// | English language file                                                     |
+// | Plugin administration page                                                |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) yyyy by the following authors:                              |
 // |                                                                           |
@@ -35,27 +35,33 @@
 * @package FooBar
 */
 
-/**
-* Import Geeklog plugin messages for reuse
-*
-* @global array $LANG32
-*/
-global $LANG32;
+require_once '../../../lib-common.php';
+require_once '../../auth.inc.php';
 
-// +---------------------------------------------------------------------------+
-// | Array Format:                                                             |
-// | $LANGXX[YY]:  $LANG - variable name                                       |
-// |               XX    - specific array name                                 |
-// |               YY    - phrase id or number                                 |
-// +---------------------------------------------------------------------------+
+$display = '';
 
-$LANG_FOOBAR_1 = array(
-    'plugin_name' => 'Foo Bar',
-    'hello' => 'Hello, world!' // this is an example only - feel free to remove
-);
+// Ensure user even has the rights to access this page
+if (! SEC_hasRights('foobar.admin')) {
+    $display .= COM_siteHeader('menu', $MESSAGE[30])
+             . COM_showMessageText($MESSAGE[29], $MESSAGE[30])
+             . COM_siteFooter();
 
-// Messages for the plugin upgrade
-$PLG_foobar_MESSAGE3001 = 'Plugin upgrade not yet supported.';
-$PLG_foobar_MESSAGE3002 = $LANG32[9];
+    // Log attempt to access.log
+    COM_accessLog("User {$_USER['username']} tried to illegally access the Foo Bar plugin administration screen.");
+
+    echo $display;
+    exit;
+}
+
+
+// MAIN
+$display .= COM_siteHeader('menu', $LANG_FOOBAR_1['plugin_name']);
+$display .= COM_startBlock($LANG_FOOBAR_1['plugin_name']);
+$display .= '<p>Welcome to the ' . $LANG_FOOBAR_1['plugin_name'] . ' plugin, '
+         . $_USER['username'] . '!</p>';
+$display .= COM_endBlock();
+$display .= COM_siteFooter();
+
+echo $display;
 
 ?>

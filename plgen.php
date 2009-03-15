@@ -35,8 +35,8 @@ error_reporting(E_ALL);
 
 // default data
 $pluginData = array(
-    'pi_name' => 'foo',
-    'pi_display_name' => 'Foo',
+    'pi_name'         => 'foobar',
+    'pi_display_name' => 'Foo Bar',
     'pi_version'      => '1.0',
     'pi_homepage'     => 'http://www.example.com/',
     'author'          => 'John Doe',
@@ -85,8 +85,9 @@ function patch($content, $plgdata)
     }
 
     $content = str_replace(
-        array('foo', 'Foo', 'FOO'),
+        array('foobar', 'Foo Bar', 'FooBar', 'FOOBAR'),
         array($plgdata['pi_name'], $plgdata['pi_display_name'],
+              preg_replace('/[^a-zA-Z0-9\-_]/', '', $plgdata['pi_display_name']),
               strtoupper($plgdata['pi_name'])),
         $content
     );
@@ -104,14 +105,10 @@ function createHeaderTemplates()
 {
     $headers = array();
 
-    $headers['pi_name']   = formattedComment('Foo Plugin 0.0');
+    $headers['pi_name']   = formattedComment('Foo Bar Plugin 0.0');
     $headers['copyright'] = formattedComment('Copyright (C) yyyy by the following authors:');
     $headers['authors']   = formattedComment('Authors: author name goes here');
-/*
-    foreach ($headers as $header) {
-        echo $header;
-    }
-*/
+
     return $headers;
 }
 
@@ -228,6 +225,23 @@ function writePluginFile($filename, $content, $plgdata)
     }
 }
 
+/**
+* Generate plugin file from template
+*
+* NOTE: aborts entire script on error
+*
+* @param    string  $filename   file name (relative path)
+* @param    array   $plgdata    plugin data
+* @return   void
+*
+*/
+function generatePluginFile($filename, $plgdata)
+{
+    $content = readTemplate($filename);
+    $content = patch($content, $plgdata);
+    writePluginFile($filename, $content, $plgdata);
+}
+
 
 // MAIN
 
@@ -250,28 +264,30 @@ fclose($stdin);
 * create plugin directories
 */
 createPluginDirectory('', $pluginData);
-createPluginDirectory('language', $pluginData);
-createPluginDirectory('public_html', $pluginData);
 createPluginDirectory('admin', $pluginData);
 createPluginDirectory('admin/images', $pluginData);
+createPluginDirectory('language', $pluginData);
+createPluginDirectory('public_html', $pluginData);
 
-$content = readTemplate('autoinstall.php');
-$content = patch($content, $pluginData);
-writePluginFile('autoinstall.php', $content, $pluginData);
+/**
+* create code files
+*/
+generatePluginFile('autoinstall.php', $pluginData);
+generatePluginFile('functions.inc', $pluginData);
+generatePluginFile('language/english.php', $pluginData);
+generatePluginFile('public_html/index.php', $pluginData);
+generatePluginFile('admin/index.php', $pluginData);
 
-$content = readTemplate('functions.inc');
-$content = patch($content, $pluginData);
-writePluginFile('functions.inc', $content, $pluginData);
-
-$content = readTemplate('language/english.php');
-$content = patch($content, $pluginData);
-writePluginFile('language/english.php', $content, $pluginData);
-
-$success = copy('plugin-template/admin/images/foo.png', $pluginData['pi_name']
-                . '/admin/images/' . $pluginData['pi_name'] . '.png');
+/**
+* copy default plugin icon
+*/
+$success = copy('plugin-template/admin/images/foobar.png',
+                $pluginData['pi_name'] . '/admin/images/'
+                    . $pluginData['pi_name'] . '.png');
 if ($success === false) {
     die("\nFailed to copy plugin icon - aborting\n");
 }
+
 
 echo "\nAll done! You'll find your plugin in the '{$pluginData['pi_name']}' subdirectory.\n\n";
 
