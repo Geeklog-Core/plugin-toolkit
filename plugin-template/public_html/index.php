@@ -35,7 +35,7 @@
 * @package FooBar
 */
 
-require_once 'lib-common.php';
+require_once '../lib-common.php';
 
 // take user back to the homepage if the plugin is not active
 if (! in_array('foobar', $_PLUGINS)) {
