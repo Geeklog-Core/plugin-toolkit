@@ -73,6 +73,21 @@ function plugin_cclabel_foo()
 }
 
 /**
+* Return plugin entry for the Admins Only block
+*
+* @return array Array containing (plugin name, plugin admin url, # of plugin items or '')
+*/
+function plugin_getadminoption_spamx()
+{
+    global $_CONF, $LANG_FOO_1;
+
+    if (SEC_hasRights('foo.admin')) {
+        return array($LANG_FOO_1['plugin_name'],
+            $_CONF['site_admin_url'] . '/plugins/foo/index.php', 0);
+    }
+}
+
+/**
 * Returns the URL of the plugin's icon
 *
 * @return   string      URL of the icon
@@ -82,7 +97,91 @@ function plugin_geticon_foo()
 {
     global $_CONF;
 
+    // popular alternative location:
+    // return $_CONF['site_url'] . '/foo/images/foo.png';
+
     return $_CONF['site_admin_url'] . '/plugins/foo/images/foo.png';
+}
+
+/**
+ * Returns the current plugin code version
+ *
+ * @return string    plugin version
+ */
+function plugin_chkVersion_foo()
+{
+    global $_CONF;
+
+    require_once $_CONF['path'] . 'plugins/foo/autoinstall.php';
+
+    $inst_parms = plugin_autoinstall_foo('foo');
+
+    return $inst_parms['info']['pi_version'];
+}
+
+/**
+* Update the plugin
+*
+* @return   int     Number of message to display or true for success
+*
+*/
+function plugin_upgrade_foo()
+{
+    global $_CONF, $_TABLES;
+
+    $installed_version = DB_getItem($_TABLES['plugins'], 'pi_version',
+                                    "pi_name = 'foo'");
+    $code_version = plugin_chkVersion_foo();
+    if ($installed_version == $code_version) {
+        // nothing to do
+        return true;
+    }
+
+    require_once $_CONF['path'] . 'plugins/foo/autoinstall.php';
+
+    if (! plugin_compatible_with_this_version_foo('foo')) {
+        return 3002;
+    }
+
+    // other update code goes here
+
+    // update plugin version number
+    $inst_parms = plugin_autoinstall_spamx('foo');
+    $pi_gl_version = $inst_parms['info']['pi_gl_version'];
+
+    DB_query("UPDATE {$_TABLES['plugins']} SET pi_version = '$code_version', pi_gl_version = '$pi_gl_version' WHERE pi_name = 'foo'");
+
+    return true;
+}
+
+/**
+* Automatic uninstall function for plugins
+*
+* This code is automatically uninstalling the plugin.
+* It passes an array to the core code function that removes
+* tables, groups, features and php blocks from the tables.
+* Additionally, this code can perform special actions that cannot be
+* foreseen by the core code (interactions with other plugins for example)
+*
+* @return   array   Plugin information
+*
+*/
+function plugin_autouninstall_foo()
+{
+    $out = array (
+        /* give the name of the tables, without $_TABLES[] */
+        'tables' => array(/* e.g. 'foo' */),
+        /* give the full name of the group, as in the db */
+        'groups' => array('Foo Admin'),
+        /* give the full name of the feature, as in the db */
+        'features' => array('foo.admin'),
+        /* give the full name of the block, including 'phpblock_', etc */
+        'php_blocks' => array(),
+        /* give all vars with their name */
+        'vars' => array()
+    );
+
+    return $out;
 }
 
 ?>
