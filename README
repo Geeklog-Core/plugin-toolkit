@@ -1,0 +1,54 @@
+Geeklog Plugin Toolkit 0.1.0                                        2009-03-15
+
+The Plugin Toolkit will eventually grow into a set of tools to assist plugin
+developers in creating and maintaining their plugins.
+
+For now, there is only one tool available: The Plugin Generator.
+
+Usage: The Plugin Generator has to be called from the command line. You need
+the CLI version of PHP.
+
+    cd plugin-toolkit
+    php plgen.php
+
+Follow the on-screen instructions. Default values are given in [square brackets]
+and can be used by pressing enter. Otherwise, enter your value.
+
+A plugin directory, using the name you entered, will be created in the current
+directory. This is a fully usable plugin, although it doesn't exactly do much
+yet. It does, however, perform install and uninstall and includes generic
+public and admin pages. Filling in the functionality is your job ...
+
+Note that currently, the created plugin is supposed to be used with Geeklog 1.6
+which has not been released yet. You can download the current Geeklog
+development version, following these instructions:
+
+    http://www.geeklog.net/staticpages/index.php/CVS
+
+Other resources:
+
+Plugin Developer Handbook:
+http://wiki.geeklog.net/index.php/Plugin_Developers_Handbook
+
+Since the Handbook is not completely up to date, also see
+http://wiki.geeklog.net/index.php/Programmers/Developers_Documentation
+
+If you want to submit a bug or a feature request for the Plugin Toolkit, use
+the bugtracker at
+
+    http://project.geeklog.net/tracking/
+
+Select "Plugin Toolkit" from the "Project:" dropdown.
+
+
+The Geeklog Plugin Toolkit is released under the GNU General Public License v2,
+or (at your option) any later version
+
+Authors:
+Dirk Haun, dirk AT haun-online DOT de
+
+Credits:
+Euan McKay for the plugin generator idea,
+Tom Willet and Blaine Lang for the Plugin Developers Handbook
+and the Universal Plugin
+
