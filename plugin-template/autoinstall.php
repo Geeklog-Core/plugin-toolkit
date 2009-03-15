@@ -51,7 +51,7 @@ function plugin_autoinstall_foobar($pi_name)
     $info = array(
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '0.0',
+        'pi_version'      => '0.0.0',
         'pi_gl_version'   => '1.6.0',
         'pi_homepage'     => 'http://www.example.com/'
     );

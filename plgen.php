@@ -2,7 +2,7 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog Plugin Toolkit 0.0.1                                              |
+// | Geeklog Plugin Toolkit: Plugin Generator 0.1                              |
 // +---------------------------------------------------------------------------+
 // | plgen.php                                                                 |
 // |                                                                           |
@@ -28,6 +28,12 @@
 // | Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.           |
 // |                                                                           |
 // +---------------------------------------------------------------------------+
+
+/**
+* @package PluginGenerator
+* @version 0.1.0
+*/
+define('VERSION', '0.1.0');
 
 // this script will run locally, so reporting all errors shouldn't be a
 // a security issue ...
@@ -59,8 +65,13 @@ function patch($content, $plgdata)
 
         switch ($name) {
         case 'authors':
-            $newComment = formattedComment('Authors: ' . $plgdata['author']
-                            . ' - ' . obfuscateEmail($plgdata['email']));
+            if (empty($plgdata['email'])) {
+                $newComment = formattedComment('Authors: '
+                                               . $plgdata['author']);
+            } else {
+                $newComment = formattedComment('Authors: ' . $plgdata['author']
+                                . ' - ' . obfuscateEmail($plgdata['email']));
+            }
             break;
 
         case 'copyright':
@@ -87,10 +98,15 @@ function patch($content, $plgdata)
     $content = str_replace(
         array('foobar', 'Foo Bar', 'FooBar', 'FOOBAR'),
         array($plgdata['pi_name'], $plgdata['pi_display_name'],
-              preg_replace('/[^a-zA-Z0-9\-_]/', '', $plgdata['pi_display_name']),
+              preg_replace('/[^a-zA-Z0-9\-_]/', '',
+                           $plgdata['pi_display_name']),
               strtoupper($plgdata['pi_name'])),
         $content
     );
+
+    $content = str_replace('0.0.0', $plgdata['pi_version'], $content);
+    $content = str_replace('http://www.example.com/', $plgdata['pi_homepage'],
+                           $content);
 
     return $content;
 }
@@ -242,23 +258,74 @@ function generatePluginFile($filename, $plgdata)
     writePluginFile($filename, $content, $plgdata);
 }
 
+/**
+* Ask user for a value, e.g. plugin name
+*
+* @param    filehandle  $fp             file handle, e.g. of 'php://stdin'
+* @param    string      $desc1          first line of description
+* @param    string      $desc2          second line of description
+* @param    string      $defaultValue   default value, displayed in [...]
+* @return   string                      value the user entered
+*
+*/
+function getValue($fp, $desc1, $desc2, $defaultValue)
+{
+    echo "\n";
+    echo $desc1 . "\n";
+    echo "($desc2) [$defaultValue] ";
+
+    $value = readln($fp);
+
+    return $value;
+}
 
 // MAIN
+echo "\nGeeklog Plugin Toolkit: Plugin Generator " . VERSION . "\n";
 
+/**
+* Get plugin information from user
+*/
 $stdin = fopen('php://stdin', 'r');
 
-echo "Internal name of your plugin?\n";
-echo "(used in URLs) [{$pluginData['pi_name']}] ";
-
-$name = readln($stdin);
+$name = getValue($stdin, 'Internal name of your plugin?',
+                 'used in URLs - no spaces!', $pluginData['pi_name']);
+$name = preg_replace('/[^a-zA-Z0-9\-_]/', '', $name);
 if (! empty($name)) {
     $pluginData['pi_name'] = $name;
 }
 
-$pluginData['pi_display_name'] = ucfirst($pluginData['pi_name']); // for now
-echo "\nNext question goes here ...\n";
+$pluginData['pi_display_name'] = ucfirst($pluginData['pi_name']);
+
+$name = getValue($stdin, 'Display name of your plugin?',
+                 'used in menu entries', $pluginData['pi_display_name']);
+if (! empty($name)) {
+    $pluginData['pi_display_name'] = $name;
+}
+
+$version = getValue($stdin, 'Version number of your plugin?',
+                    'typically x.y or x.y.z', $pluginData['pi_version']);
+if (! empty($version)) {
+    $pluginData['pi_version'] = $version;
+}
+
+$name = getValue($stdin, 'Your name?', 'for the copyright info',
+                 $pluginData['author']);
+if (! empty($name)) {
+    $pluginData['author'] = $name;
+}
+
+$email = getValue($stdin, 'Your email address?', 'optional, will be obfuscated',
+                  '');
+$pluginData['email'] = $email;
+
+$homepage = getValue($stdin, 'Plugin homepage?', 'e.g. for updates',
+                     $pluginData['pi_homepage']);
+if (! empty($homepage)) {
+    $pluginData['pi_homepage'] = $homepage;
+}
 
 fclose($stdin);
+
 
 /**
 * create plugin directories
