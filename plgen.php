@@ -95,12 +95,16 @@ function patch($content, $plgdata)
         }
     }
 
+    $idfield = substr($plgdata['pi_name'], 0, 1) . 'id';
+
     $content = str_replace(
-        array('foobar', 'Foo Bar', 'FooBar', 'FOOBAR'),
-        array($plgdata['pi_name'], $plgdata['pi_display_name'],
+        array('foobar', 'Foo Bar', 'FooBar', 'FOOBAR', 'fbid'),
+        array($plgdata['pi_name'],
+              $plgdata['pi_display_name'],
               preg_replace('/[^a-zA-Z0-9\-_]/', '',
                            $plgdata['pi_display_name']),
-              strtoupper($plgdata['pi_name'])),
+              strtoupper($plgdata['pi_name']),
+              $idfield),
         $content
     );
 
@@ -324,6 +328,18 @@ if (! empty($homepage)) {
     $pluginData['pi_homepage'] = $homepage;
 }
 
+$useSql = getValue($stdin, 'Create SQL files?', 'needed if your plugin will store data in the database', 'yes');
+if (empty($useSql)) {
+    $useSql = true;
+} else {
+    $useSql = strtolower($useSql);
+    if (($useSql == 'yes') || ($useSql == 'y')) {
+        $useSql = true;
+    } else {
+        $useSql = false;
+    }
+}
+
 fclose($stdin);
 
 
@@ -335,6 +351,9 @@ createPluginDirectory('admin', $pluginData);
 createPluginDirectory('admin/images', $pluginData);
 createPluginDirectory('language', $pluginData);
 createPluginDirectory('public_html', $pluginData);
+if ($useSql) {
+    createPluginDirectory('sql', $pluginData);
+}
 
 /**
 * create code files
@@ -344,6 +363,10 @@ generatePluginFile('functions.inc', $pluginData);
 generatePluginFile('language/english.php', $pluginData);
 generatePluginFile('public_html/index.php', $pluginData);
 generatePluginFile('admin/index.php', $pluginData);
+if ($useSql) {
+    generatePluginFile('sql/mysql_install.php', $pluginData);
+    generatePluginFile('sql/mssql_install.php', $pluginData);
+}
 
 /**
 * copy default plugin icon
