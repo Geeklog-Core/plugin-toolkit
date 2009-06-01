@@ -52,6 +52,90 @@ if (file_exists($langfile)) {
     require_once $plugin_path . 'language/english.php';
 }
 
+
+// +---------------------------------------------------------------------------+
+// | Geeklog Plugin API Implementation                                         |
+// +---------------------------------------------------------------------------+
+
+{optional:use_sql}
+/**
+* Geeklog is asking us to provide any items that show up in the type
+* drop-down on search.php.  Let's users search for links.
+*
+* @return   array   (plugin name/entry title) pair for the dropdown
+*
+*/
+/*
+function plugin_searchtypes_foobar()
+{
+    global $LANG_FOOBAR_1;
+
+    $tmp['foobar'] = $LANG_FOOBAR_1['plugin_name'];
+
+    return $tmp;
+}
+*/
+
+/**
+* This searches for entries matching the user query and returns an array for the
+* header and table rows back to search.php where it will be formated and printed
+*
+* @param    string  $query      Keywords user is looking for
+* @param    date    $datestart  Start date to get results for
+* @param    date    $dateend    End date to get results for
+* @param    string  $topic      The topic they were searching in
+* @param    string  $type       Type of items they are searching, or 'all' (deprecated)
+* @param    int     $author     Get all results by this author
+* @param    string  $keyType    search key type: 'all', 'phrase', 'any'
+* @param    int     $page       page number of current search (deprecated)
+* @param    int     $perpage    number of results per page (deprecated)
+* @return   object              search result object
+*
+*/
+/*
+function plugin_dopluginsearch_foobar($query, $datestart, $dateend, $topic, $type, $author, $keyType, $page, $perpage)
+{
+    global $_TABLES, $LANG_FOOBAR_1;
+
+    // Make sure the query is SQL safe
+    $query = trim(addslashes($query));
+
+    /**
+    * @todo NOTE: Update SQL query to match the actual table used by the
+    *             Foo Bar plugin!
+    */
+
+    $sql = "SELECT fbid AS id, title, description, UNIX_TIMESTAMP(date) AS date, owner_id AS uid, hits, ";
+    $sql .= "CONCAT('/foobar/index.php?item=', fbid) AS url ";
+    $sql .= "FROM {$_TABLES['foobar']} WHERE date <> 1 ";
+    $sql .= COM_getPermSQL('AND') . ' ';
+
+    if (!empty($datestart) && !empty($dateend)) {
+        $delim = substr($datestart, 4, 1);
+        if (!empty($delim)) {
+            $DS = explode($delim, $datestart);
+            $DE = explode($delim, $dateend);
+            $startdate = mktime(0,0,0,$DS[1],$DS[2],$DS[0]);
+            $enddate = mktime(23,59,59,$DE[1],$DE[2],$DE[0]);
+            $sql .= "AND (UNIX_TIMESTAMP(date) BETWEEN '$startdate' AND '$enddate') ";
+        }
+    }
+    if (!empty ($author)) {
+        $sql .= "AND (owner_id = '$author') ";
+    }
+
+    $search = new SearchCriteria('foobar', $LANG_FOOBAR_1['plugin_name']);
+    $columns = array('title', 'description');
+    list($sql,$ftsql) = $search->buildSearchSQL($keyType, $query, $columns, $sql);
+    $search->setSQL($sql);
+    $search->setFTSQL($ftsql);
+    $search->setRank(3);
+
+    return $search;
+}
+*/
+
+{/optional:use_sql}
 /**
 * Return plugin entry for "Command and Control" (moderation.php)
 *

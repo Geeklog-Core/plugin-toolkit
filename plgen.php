@@ -31,9 +31,9 @@
 
 /**
 * @package PluginGenerator
-* @version 0.1.0
+* @version 0.1.1
 */
-define('VERSION', '0.1.0');
+define('VERSION', '0.1.1');
 
 // this script will run locally, so reporting all errors shouldn't be a
 // a security issue ...

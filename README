@@ -1,4 +1,4 @@
-Geeklog Plugin Toolkit 0.1.0                                        2009-03-15
+Geeklog Plugin Toolkit 0.1.1                                        2009-06-01
 
 The Plugin Toolkit will eventually grow into a set of tools to assist plugin
 developers in creating and maintaining their plugins.
@@ -30,8 +30,8 @@ Other resources:
 Plugin Developer Handbook:
 http://wiki.geeklog.net/index.php/Plugin_Developers_Handbook
 
-Since the Handbook is not completely up to date, also see
-http://wiki.geeklog.net/index.php/Programmers/Developers_Documentation
+Since the Handbook is not completely up to date yet (work in progress), also see
+http://wiki.geeklog.net/index.php/Plugin_API
 
 If you want to submit a bug or a feature request for the Plugin Toolkit, use
 the bugtracker at
