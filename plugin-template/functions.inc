@@ -137,6 +137,40 @@ function plugin_dopluginsearch_foobar($query, $datestart, $dateend, $topic, $typ
 
 {/optional:use_sql}
 /**
+* Implements a [foobar:] autotag.
+*
+* @param    string  $op         operation to perform
+* @param    string  $content    item (e.g. story text), including the autotag
+* @param    array   $autotag    parameters used in the autotag
+* @param    mixed               tag names (for $op='tagname') or formatted content
+*
+*/
+/*
+function plugin_autotags_foobar($op, $content = '', $autotag = '')
+{
+    global $_CONF, $_TABLES, $LANG_FOOBAR_1;
+
+    if ($op == 'tagname') {
+        return 'foobar';
+    } elseif ($op == 'parse') {
+        $fbid = COM_applyFilter($autotag['parm1']);
+        if (! empty($fbid)) {
+            $url = $_CONF['site_url'] . '/foobar/index.php?item=' . $fbid);
+            if (empty($autotag['parm2'])) {
+                $linktext = 'Foo Bar'; // or get title from db
+            } else {
+                $linktext = $autotag['parm2'];
+            }
+            $link = COM_createLink($linktext, $url);
+            $content = str_replace($autotag['tagstr'], $link, $content);
+        }
+
+        return $content;
+    }
+}
+*/
+
+/**
 * Return plugin entry for "Command and Control" (moderation.php)
 *
 * @return  array  Array containing (plugin name, admin url, url of plugin icon)
