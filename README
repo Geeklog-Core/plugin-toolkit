@@ -20,8 +20,9 @@ yet. It does, however, perform install and uninstall and includes generic
 public and admin pages. Filling in the functionality is your job ...
 
 Note that currently, the created plugin is supposed to be used with Geeklog 1.6
-which has not been released yet. You can download the current Geeklog
-development version, following these instructions:
+which, at the time of this writing, was still in beta. You can download a beta
+(or maybe, by the time you read this, the final version) from www.geeklog.net.
+Alternatively, use the development version, following these instructions:
 
     http://www.geeklog.net/staticpages/index.php/CVS
 
@@ -55,3 +56,7 @@ Euan McKay for the plugin generator idea,
 Tom Willet and Blaine Lang for the Plugin Developers Handbook
 and the Universal Plugin
 
+History:
+0.1.0 - first release
+0.1.1 - optionally create a table (SQL support); added function templates for
+        the search, autotags, and menu bar entries
