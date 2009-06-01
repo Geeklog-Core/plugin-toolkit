@@ -57,6 +57,25 @@ if (file_exists($langfile)) {
 // | Geeklog Plugin API Implementation                                         |
 // +---------------------------------------------------------------------------+
 
+/**
+* Returns the item(s) for this plugin that should appear on the main menu
+*
+* NOTE: this MUST return the url/value pairs in the following format
+* $<arrayname>[<label>] = <url>
+*
+* @return   mixed   menu entry, or boolean false if disabled / hidden
+*
+*/
+function plugin_getmenuitems_foobar()
+{
+    global $_CONF, $LANG_FOOBAR_1;
+
+    $url = $_CONF['site_url'] . '/foobar/index.php';
+    $menuitems[$LANG_FOOBAR_1['plugin_name']] = $url;
+
+    return $menuitems;
+}
+
 {optional:use_sql}
 /**
 * Geeklog is asking us to provide any items that show up in the type
