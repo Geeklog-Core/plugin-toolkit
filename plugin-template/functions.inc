@@ -52,6 +52,13 @@ if (file_exists($langfile)) {
     require_once $plugin_path . 'language/english.php';
 }
 
+{optional:use_sql}
+/**
+ * Foo Bar plugin table(s)
+ */
+$_TABLES['foobar'] = $_DB_table_prefix . 'foobar';
+
+{/optional:use_sql}
 
 // +---------------------------------------------------------------------------+
 // | Geeklog Plugin API Implementation                                         |
@@ -119,10 +126,8 @@ function plugin_dopluginsearch_foobar($query, $datestart, $dateend, $topic, $typ
     // Make sure the query is SQL safe
     $query = trim(addslashes($query));
 
-    /**
-    * @todo NOTE: Update SQL query to match the actual table used by the
-    *             Foo Bar plugin!
-    */
+    // NOTE: Update SQL query to match the actual table used by the
+    //       Foo Bar plugin!
 
     $sql = "SELECT fbid AS id, title, description, UNIX_TIMESTAMP(date) AS date, owner_id AS uid, hits, ";
     $sql .= "CONCAT('/foobar/index.php?item=', fbid) AS url ";
@@ -307,7 +312,11 @@ function plugin_autouninstall_foobar()
 {
     $out = array (
         /* give the name of the tables, without $_TABLES[] */
+{optional:use_sql}
+        'tables' => array('foobar'),
+{!optional:use_sql}
         'tables' => array(/* e.g. 'foobar' */),
+{/optional:use_sql}
         /* give the full name of the group, as in the db */
         'groups' => array('Foo Bar Admin'),
         /* give the full name of the feature, as in the db */

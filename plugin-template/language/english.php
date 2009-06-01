@@ -55,7 +55,6 @@ $LANG_FOOBAR_1 = array(
 );
 
 // Messages for the plugin upgrade
-$PLG_foobar_MESSAGE3001 = 'Plugin upgrade not yet supported.';
-$PLG_foobar_MESSAGE3002 = $LANG32[9];
+$PLG_foobar_MESSAGE3002 = $LANG32[9]; // "requires a newer version of Geeklog"
 
 ?>

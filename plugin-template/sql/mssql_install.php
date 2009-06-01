@@ -32,13 +32,13 @@
 
 $_SQL[] = "
 CREATE TABLE [dbo].[{$_TABLES['foobar']}] (
-    [fbid] [varchar] (40) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
-    [owner_id] [numeric](8, 0) NOT NULL ,
-    [group_id] [numeric](8, 0) NOT NULL ,
-    [perm_owner] [tinyint] NOT NULL ,
-    [perm_group] [tinyint] NOT NULL ,
-    [perm_members] [tinyint] NOT NULL ,
-    [perm_anon] [tinyint] NOT NULL ,
+    [fbid] [varchar] (40) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+    [owner_id] [numeric](8, 0) NOT NULL,
+    [group_id] [numeric](8, 0) NOT NULL,
+    [perm_owner] [tinyint] NOT NULL,
+    [perm_group] [tinyint] NOT NULL,
+    [perm_members] [tinyint] NOT NULL,
+    [perm_anon] [tinyint] NOT NULL
 ) ON [PRIMARY] 
 ";
 

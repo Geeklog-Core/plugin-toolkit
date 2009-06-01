@@ -67,10 +67,9 @@ function optionalSections($content, $plgdata)
 
     $skip = false;
     foreach ($lines as $line) {
-        if (strpos($line, '{optional:') !== false) {
+        if (strpos($line, '{optional:') !== false) { // "if"
             $x = explode(':', $line);
             if (count($x) != 2) {
-var_dump($x);
                 die("\nsyntax error in {optional:} tag - aborting\n");
             }
             $tag = trim(str_replace('}', '', $x[1]));
@@ -80,7 +79,9 @@ var_dump($x);
             } else {
                 $skip = true;
             }
-        } elseif (strpos($line, '{/optional:') !== false) {
+        } elseif (strpos($line, '{!optional:') !== false) { // "else"
+            $skip = ! $skip;
+        } elseif (strpos($line, '{/optional:') !== false) { // "endif"
             $skip = false;
         } elseif (! $skip) {
             $newlines[] = $line;

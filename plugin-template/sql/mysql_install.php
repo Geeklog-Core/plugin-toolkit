@@ -39,7 +39,7 @@ CREATE TABLE {$_TABLES['foobar']} (
   perm_group tinyint(1) unsigned NOT NULL default '2',
   perm_members tinyint(1) unsigned NOT NULL default '2',
   perm_anon tinyint(1) unsigned NOT NULL default '2',
-  PRIMARY KEY (fbid),
+  PRIMARY KEY (fbid)
 ) TYPE=MyISAM
 ";
 
