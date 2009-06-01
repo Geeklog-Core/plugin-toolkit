@@ -71,7 +71,9 @@ function plugin_autoinstall_foobar($pi_name)
     );
 
     $tables = array(
+{optional:use_sql}
         'foobar'
+{/optional:use_sql}
     );
 
     $inst_parms = array(
@@ -94,7 +96,18 @@ function plugin_autoinstall_foobar($pi_name)
 */
 function plugin_compatible_with_this_version_foobar($pi_name)
 {
-    // add any checks here
+{optional:use_sql}
+    global $_CONF, $_DB_dbms;
+
+    // check if we support the DBMS the site is running on
+    $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
+            . $_DB_dbms . '_install.php';
+    if (! file_exists($dbFile)) {
+        return false;
+    }
+
+{/optional:use_sql}
+    // add checks here
 
     return true;
 }

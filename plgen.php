@@ -46,8 +46,49 @@ $pluginData = array(
     'pi_version'      => '1.0',
     'pi_homepage'     => 'http://www.example.com/',
     'author'          => 'John Doe',
-    'email'           => 'john@example.com'
+    'email'           => 'john@example.com',
+    'use_sql'         => true
 );
+
+/**
+* Activate or remove {optional:...} sections
+*
+* NOTE: Expects {optional:} tags to be at the start of the line
+*
+* @param    string  $content    file content to patch
+* @param    array   $plgdata    plugin data
+* @return   string              patched file content
+*
+*/
+function optionalSections($content, $plgdata)
+{
+    $newlines = array();
+    $lines = explode("\n", $content);
+
+    $skip = false;
+    foreach ($lines as $line) {
+        if (strpos($line, '{optional:') !== false) {
+            $x = explode(':', $line);
+            if (count($x) != 2) {
+var_dump($x);
+                die("\nsyntax error in {optional:} tag - aborting\n");
+            }
+            $tag = trim(str_replace('}', '', $x[1]));
+
+            if (isset($plgdata[$tag]) && $plgdata[$tag]) {
+                $skip = false;
+            } else {
+                $skip = true;
+            }
+        } elseif (strpos($line, '{/optional:') !== false) {
+            $skip = false;
+        } elseif (! $skip) {
+            $newlines[] = $line;
+        }
+    }
+
+    return implode("\n", $newlines);
+}
 
 /**
 * Patch file content with plugin data
@@ -259,6 +300,7 @@ function generatePluginFile($filename, $plgdata)
 {
     $content = readTemplate($filename);
     $content = patch($content, $plgdata);
+    $content = optionalSections($content, $plgdata);
     writePluginFile($filename, $content, $plgdata);
 }
 
@@ -328,7 +370,9 @@ if (! empty($homepage)) {
     $pluginData['pi_homepage'] = $homepage;
 }
 
-$useSql = getValue($stdin, 'Create SQL files?', 'needed if your plugin will store data in the database', 'yes');
+$useSql = getValue($stdin, 'Create SQL files?',
+                   'needed if your plugin will store data in the database',
+                   'yes');
 if (empty($useSql)) {
     $useSql = true;
 } else {
@@ -339,6 +383,7 @@ if (empty($useSql)) {
         $useSql = false;
     }
 }
+$pluginData['use_sql'] = $useSql;
 
 fclose($stdin);
 
@@ -351,7 +396,7 @@ createPluginDirectory('admin', $pluginData);
 createPluginDirectory('admin/images', $pluginData);
 createPluginDirectory('language', $pluginData);
 createPluginDirectory('public_html', $pluginData);
-if ($useSql) {
+if ($pluginData['use_sql']) {
     createPluginDirectory('sql', $pluginData);
 }
 
@@ -363,7 +408,7 @@ generatePluginFile('functions.inc', $pluginData);
 generatePluginFile('language/english.php', $pluginData);
 generatePluginFile('public_html/index.php', $pluginData);
 generatePluginFile('admin/index.php', $pluginData);
-if ($useSql) {
+if ($pluginData['use_sql']) {
     generatePluginFile('sql/mysql_install.php', $pluginData);
     generatePluginFile('sql/mssql_install.php', $pluginData);
 }
