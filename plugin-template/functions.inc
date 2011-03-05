@@ -179,7 +179,7 @@ function plugin_autotags_foobar($op, $content = '', $autotag = '')
     } elseif ($op == 'parse') {
         $fbid = COM_applyFilter($autotag['parm1']);
         if (! empty($fbid)) {
-            $url = $_CONF['site_url'] . '/foobar/index.php?item=' . $fbid);
+            $url = $_CONF['site_url'] . '/foobar/index.php?item=' . $fbid;
             if (empty($autotag['parm2'])) {
                 $linktext = 'Foo Bar'; // or get title from db
             } else {
