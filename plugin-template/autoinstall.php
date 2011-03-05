@@ -86,6 +86,22 @@ function plugin_autoinstall_foobar($pi_name)
 
     return $inst_parms;
 }
+{optional:use_config_ui}
+/**
+* Create the initial configuration for the plugin
+*/
+function plugin_load_configuration_foobar($pi_name)
+{
+    global $_CONF;
+
+    $base_path = $_CONF['path'] . 'plugins/' . $pi_name . '/';
+
+    require_once $_CONF['path_system'] . 'classes/config.class.php';
+    require_once $base_path . 'install_defaults.php';
+
+    return plugin_initconfig_foobar();
+}
+{/optional:use_config_ui}
 
 /**
 * Check if the plugin is compatible with this Geeklog version

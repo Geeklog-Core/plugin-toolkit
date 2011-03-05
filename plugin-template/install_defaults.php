@@ -4,9 +4,9 @@
 // +---------------------------------------------------------------------------+
 // | Foo Bar Plugin 0.0                                                        |
 // +---------------------------------------------------------------------------+
-// | english.php                                                               |
+// | install_defaults.php                                                      |
 // |                                                                           |
-// | English language file                                                     |
+// | This file is used to hook into Geeklog's configuration UI                 |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) yyyy by the following authors:                              |
 // |                                                                           |
@@ -35,55 +35,55 @@
 * @package FooBar
 */
 
+if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.inc') !== false) {
+    die ('This file can not be used on its own.');
+}
+
 /**
-* Import Geeklog plugin messages for reuse
+* Foo Bar default settings
 *
-* @global array $LANG32
+* Initial Installation Defaults used when loading the online configuration
+* records.  These settings are only used during the initial installation
+* and not referenced any more once the plugin is installed
 */
-global $LANG32;
+global $_FOOBAR_DEFAULT;
+$_FOOBAR_DEFAULT = array();
 
-// +---------------------------------------------------------------------------+
-// | Array Format:                                                             |
-// | $LANGXX[YY]:  $LANG - variable name                                       |
-// |               XX    - specific array name                                 |
-// |               YY    - phrase id or number                                 |
-// +---------------------------------------------------------------------------+
+// This is the default for 'samplesetting1'
+$_FOOBAR_DEFAULT['samplesetting1'] = true;
 
-$LANG_FOOBAR_1 = array(
-    'plugin_name' => 'Foo Bar',
-    'hello' => 'Hello, world!' // this is an example only - feel free to remove
-);
+// This is the default for 'samplesetting2'
+$_FOOBAR_DEFAULT['samplesetting2'] = 1;
 
-// Messages for the plugin upgrade
-$PLG_foobar_MESSAGE3002 = $LANG32[9]; // "requires a newer version of Geeklog"
+/**
+* Initialize Foo Bar plugin configuration
+*
+* Creates the database entries for the configuation if they don't already
+* exist.  Initial values will be taken from $_FOOBAR_DEFAULT.
+*
+* @return   boolean     TRUE: success; FALSE: an error occurred
+*/
+function plugin_initconfig_foobar()
+{
+    global $_FOOBAR_CONF, $_FOOBAR_DEFAULT;
 
-{optional:use_config_ui}
-// Localization of the Admin Configuration UI
-$LANG_configsections['foobar'] = array(
-    'label' => 'Foo Bar',
-    'title' => 'Foo Bar Configuration'
-);
+    if (is_array($_FOOBAR_CONF) && (count($_FOOBAR_CONF) > 1)) {
+        $_FOOBAR_DEFAULT = array_merge($_FOOBAR_DEFAULT, $_FOOBAR_CONF);
+    }
 
-$LANG_confignames['foobar'] = array(
-    'samplesetting1' => 'Sample Setting #1',
-    'samplesetting2' => 'Sample Setting #2',
-);
+    $me = 'foobar';
 
-$LANG_configsubgroups['foobar'] = array(
-    'sg_main' => 'Main Settings'
-);
+    $c = config::get_instance();
+    if (!$c->group_exists('foobar')) {
+        $c->add('sg_main', NULL, 'subgroup', 0, 0, NULL, 0, true, $me, 0);
+        $c->add('tab_main', NULL, 'tab', 0, 0, NULL, 0, true, $me, 0);
+        $c->add('fs_main', NULL, 'fieldset', 0, 0, NULL, 0, true, $me, 0);
+        // The below two lines add two settings to Geeklog's config UI
+        $c->add('samplesetting1', $_FOOBAR_DEFAULT['samplesetting1'], 'select',0, 0, 1, 10, true, $me, 0); // This adds a drop-down box
+        $c->add('samplesetting2', $_FOOBAR_DEFAULT['samplesetting2'], 'text', 0, 0, null, 20, true, $me, 0); // This adds a text input field
+    }
 
-$LANG_tab['foobar'] = array(
-    'tab_main' => 'Foo Bar Main Settings'
-);
-
-$LANG_fs['foobar'] = array(
-    'fs_main' => 'Foo Bar Main Settings'
-);
-
-$LANG_configselects['foobar'] = array(
-    0 => array('True' => 1, 'False' => 0),
-    1 => array('True' => true, 'False' => false)
-);
-{/optional:use_config_ui}
+    return true;
+}
 ?>
+

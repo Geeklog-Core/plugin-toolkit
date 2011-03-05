@@ -2,15 +2,16 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog Plugin Toolkit: Plugin Generator 0.1                              |
+// | Geeklog Plugin Toolkit: Plugin Generator 0.1.1                            |
 // +---------------------------------------------------------------------------+
 // | plgen.php                                                                 |
 // |                                                                           |
 // | Creates a plugin template                                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2009 by the following authors:                              |
+// | Copyright (C) 2011 by the following authors:                              |
 // |                                                                           |
-// | Authors: Dirk Haun - dirk AT haun-online DOT de                           |
+// | Authors: Dirk Haun              dirk AT haun-online DOT de                |
+// |          Rouslan Placella       rouslan AT placella DOT com               |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -47,7 +48,8 @@ $pluginData = array(
     'pi_homepage'     => 'http://www.example.com/',
     'author'          => 'John Doe',
     'email'           => 'john@example.com',
-    'use_sql'         => true
+    'use_sql'         => true,
+    'use_config_ui'   => true
 );
 
 /**
@@ -386,6 +388,21 @@ if (empty($useSql)) {
 }
 $pluginData['use_sql'] = $useSql;
 
+$useConfigUI = getValue($stdin, 'Create some sample entries for the Configuration UI?',
+                   'needed if your plugin will use Geeklog\'s configuration to store settings',
+                   'yes');
+if (empty($useConfigUI)) {
+    $useConfigUI = true;
+} else {
+    $useConfigUI = strtolower($useConfigUI);
+    if (($useConfigUI == 'yes') || ($useConfigUI == 'y')) {
+        $useConfigUI = true;
+    } else {
+        $useConfigUI = false;
+    }
+}
+$pluginData['use_config_ui'] = $useConfigUI;
+
 fclose($stdin);
 
 
@@ -412,6 +429,9 @@ generatePluginFile('admin/index.php', $pluginData);
 if ($pluginData['use_sql']) {
     generatePluginFile('sql/mysql_install.php', $pluginData);
     generatePluginFile('sql/mssql_install.php', $pluginData);
+}
+if ($pluginData['use_config_ui']) {
+    generatePluginFile('install_defaults.php', $pluginData);
 }
 
 /**

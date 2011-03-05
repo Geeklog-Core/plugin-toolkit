@@ -52,6 +52,17 @@ if (file_exists($langfile)) {
     require_once $plugin_path . 'language/english.php';
 }
 
+{optional:use_config_ui}
+/**
+* Check and see if we need to load the plugin configuration
+*/ 
+if (!isset($_FOOBAR_CONF)) {
+    require_once $_CONF['path_system'] . 'classes/config.class.php';
+    
+    $foobar_config = config::get_instance();
+    $_FOOBAR_CONF = $foobar_config->get_config('foobar');
+}
+{/optional:use_config_ui}
 {optional:use_sql}
 /**
  * Foo Bar plugin table(s)
