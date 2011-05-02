@@ -76,12 +76,22 @@ function plugin_autoinstall_foobar($pi_name)
 {/optional:use_sql}
     );
 
+    // Version control and dependencies settings for Geeklog 1.8.0+
+    // http://wiki.geeklog.net/index.php/Plugin_Autoinstall#Plugin_dependencies_and_version_control
+    $requires = array(
+{optional:use_sql}
+        array('db' => 'mysql', 'version' => '4.1'),
+        array('db' => 'mssql')
+{/optional:use_sql}
+    );
+
     $inst_parms = array(
         'info'      => $info,
         'groups'    => $groups,
         'features'  => $features,
         'mappings'  => $mappings,
-        'tables'    => $tables
+        'tables'    => $tables,
+        'requires'  => $requires
     );
 
     return $inst_parms;
